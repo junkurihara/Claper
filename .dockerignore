@@ -20,3 +20,5 @@ node_modules
 assets/node_modules/
 deps/
 assets/yarn.lock
+
+data/

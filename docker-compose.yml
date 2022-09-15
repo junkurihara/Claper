@@ -1,21 +1,28 @@
-version: "3.0"
+version: "3.9"
 services:
-  db:
+  claper-db:
     image: postgres:9
-    ports: 
-      - 5432:5432
+    container_name: claper-db
+    expose:
+      - 5432
     environment:
       POSTGRES_PASSWORD: claper
       POSTGRES_USER: claper
       POSTGRES_DB: claper
-  app:
-    image: ghcr.io/claperco/claper:latest
-    ports: 
-      - 4000:4000
+    volumes:
+      - ./data/postgresql:/var/lib/postgresql/data
+  claper-app:
+    image: jqtype/claper:latest
+    build:
+      context: ./
+    container_name: claper-app
+    ports:
+      - 127.0.0.1:4000:4000
     environment:
-      DATABASE_URL: postgres://claper:claper@db:5432/claper
+      DATABASE_URL: postgres://claper:claper@claper-db:5432/claper
       SECRET_KEY_BASE: 0LZiQBLw4WvqPlz4cz8RsHJlxNiSqM9B48y4ChyJ5v1oA0L/TPIqRjQNdPZN3iEG
       MAIL_TRANSPORT: local
       ENDPOINT_PORT: 4000
+      ENABLE_ACCOUNT_CREATION: false
     depends_on:
-      - db
+      - claper-db
